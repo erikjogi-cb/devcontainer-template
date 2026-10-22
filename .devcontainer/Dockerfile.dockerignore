@@ -1,0 +1,6 @@
+# Scoped to this Dockerfile alone, so a build from the repo root (the app image)
+# keeps its own rules. The devcontainer image copies only these files.
+*
+!package.json
+!package-lock.json
+!.devcontainer

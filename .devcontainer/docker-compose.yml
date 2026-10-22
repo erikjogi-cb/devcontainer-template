@@ -1,0 +1,30 @@
+# Services that the project itself needs (a database, for example) go in a
+# compose file of their own. Add it with an `include:` block, for example:
+#
+# include:
+#   - ../docker-compose.yml
+
+services:
+  app:
+    build:
+      # Repo root, so the image can install the Playwright browser that package-lock.json pins
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ..:/workspace:delegated
+      - claude-code-bashhistory:/commandhistory
+      - claude-code-config:/home/node/.claude
+    command: sleep infinity
+    environment:
+      NODE_OPTIONS: "--max-old-space-size=4096"
+      CLAUDE_CONFIG_DIR: /home/node/.claude
+      POWERLEVEL9K_DISABLE_GITSTATUS: "true"
+      # devcontainer-restart.sh reads it from 1Password. gh uses it as the git credential helper.
+      GH_TOKEN: ${GH_TOKEN}
+
+volumes:
+  claude-code-bashhistory:
+  claude-code-config:
