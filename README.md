@@ -1,7 +1,6 @@
 # Devcontainer template
 
-A firewalled devcontainer for Claude Code. It merges the setups of krypto and
-pontoon. The container starts as root, applies an outbound allow-list, and then
+A firewalled devcontainer for Claude Code. The container starts as root, applies an outbound allow-list, and then
 runs the workload as `node`.
 
 ## Use it in a new project
