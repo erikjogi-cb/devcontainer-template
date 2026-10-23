@@ -8,7 +8,7 @@ runs the workload as `node`.
 1. Get the files of this repo into your project root: `curl -L https://github.com/erikjogi-cb/devcontainer-template/archive/HEAD.tar.gz | tar xz --exclude='*/README.md' --strip-components=1`
 2. Set `COMPOSE_PROJECT_NAME` in `.devcontainer/.env`.
 3. Add the hosts of the project to `.devcontainer/allowed-domains.conf`.
-4. If the dev server listens on a port other than 4000 or 8000, change the inbound rules in `init-firewall.sh`.
+4. If you want to connect to a server running inside the devconatiner, add the port to `.devcontainer/inbound-ports.conf`.
 5. If the project needs a JDK other than 25, change `TEMURIN_VERSION` in the `Dockerfile`.
 6. Run `./devcontainer-restart.sh` on the host.
 

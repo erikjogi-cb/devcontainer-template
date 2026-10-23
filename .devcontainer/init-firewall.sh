@@ -88,6 +88,26 @@ while IFS= read -r raw || [ -n "$raw" ]; do
 done < "$CONFIG_FILE"
 echo "Loaded ${#ALLOWED_DOMAINS[@]} allowed hosts (${#DYNAMIC_DOMAINS[@]} dynamic) from $CONFIG_FILE"
 
+# Inbound TCP ports, one per line, from a second config next to this script
+PORTS_FILE="$SCRIPT_DIR/inbound-ports.conf"
+if [ ! -f "$PORTS_FILE" ]; then
+    echo "ERROR: inbound port config not found at $PORTS_FILE"
+    exit 1
+fi
+
+INBOUND_PORTS=()
+while IFS= read -r raw || [ -n "$raw" ]; do
+    line="${raw%%#*}"
+    [[ "$line" =~ ^[[:space:]]*$ ]] && continue
+    IFS=$' \t' read -r port _ <<< "$line"
+    if [[ ! "$port" =~ ^[0-9]{1,5}$ ]] || [ "$port" -lt 1 ] || [ "$port" -gt 65535 ]; then
+        echo "ERROR: Invalid port in inbound port config: $port"
+        exit 1
+    fi
+    INBOUND_PORTS+=("$port")
+done < "$PORTS_FILE"
+echo "Loaded ${#INBOUND_PORTS[@]} inbound ports from $PORTS_FILE"
+
 # --- Main script ---
 
 # 1. Extract Docker DNS info BEFORE any flushing
@@ -251,8 +271,10 @@ done
 
 # Allow inbound connections to published dev server ports from any source
 # (needed because Docker Desktop's port forwarder may use a source IP outside 172.x)
-iptables -A INPUT -p tcp --dport 4000 -j ACCEPT
-iptables -A INPUT -p tcp --dport 8000 -j ACCEPT
+for port in "${INBOUND_PORTS[@]}"; do
+    echo "Allowing inbound port $port"
+    iptables -A INPUT -p tcp --dport "$port" -j ACCEPT
+done
 
 # Set default policies to DROP first
 iptables -P INPUT DROP

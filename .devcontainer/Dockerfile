@@ -140,6 +140,7 @@ RUN git config --global url."https://github.com/".insteadOf "git@github.com:"
 # init-firewall.sh finds allowed-domains.conf whether run from here or the mount)
 COPY .devcontainer/init-firewall.sh /usr/local/bin/
 COPY .devcontainer/allowed-domains.conf /usr/local/bin/
+COPY .devcontainer/inbound-ports.conf /usr/local/bin/
 COPY .devcontainer/entrypoint.sh /usr/local/bin/
 USER root
 RUN chmod +x /usr/local/bin/init-firewall.sh /usr/local/bin/entrypoint.sh
