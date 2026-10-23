@@ -133,7 +133,10 @@ RUN cd /tmp/playwright \
      fi \
   && rm -rf /tmp/playwright
 
-# Use gh as the git credential helper; it reads GH_TOKEN at runtime (set in compose)
+# Add github.com keys to known_hosts
+RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan -t ed25519,ecdsa,rsa github.com >> ~/.ssh/known_hosts
+
+# Use gh as the git credential helper
 RUN gh auth setup-git --hostname github.com --force
 RUN git config --global url."https://github.com/".insteadOf "git@github.com:"
 
